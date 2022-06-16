@@ -1,0 +1,36 @@
+html {
+    height: 100%;
+  }
+  
+  body {
+    height: 100%;
+    margin: 0;
+    background: #162944;
+  }
+  
+  .button_slide {
+    color: rgb(0, 0, 0);
+    border: 2px solid rgb(11, 210, 200);
+    border-radius: 0px;
+    padding: 72px 144px;
+    display: inline-block;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 28px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 0 #0cc786;
+    -webkit-transition: ease-out 0.4s;
+    -moz-transition: ease-out 0.4s;
+    transition: ease-out 0.4s;
+  }
+  
+
+  .slide_left:hover {
+    box-shadow: inset 0 0 0 50px #0cc786;
+  }
+  
+  #outer {
+    width: 364px;
+    margin: 50px auto 0 auto;
+    text-align: center;
+  }
