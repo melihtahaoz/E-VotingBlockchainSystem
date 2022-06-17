@@ -1,18 +1,38 @@
 {% extends 'base.html' %}
-
+<!DOCTYPE html>
+<html lang="en">
+  
 {% block content %}
-<style>
-</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+</head>
 
-        <h1 class="display-4">Welcome, choose your login profile</h1>
-        
-        <div id="outer">
-            
-            <div class="button_slide slide_left"><button type="submit"  name='mybtn2'>Voter</button> </div>
-            <br /> <br /><br />
-            <div class="button_slide slide_left">Admin </div>
-            <br /> <br /><br />
-            
+<body>
+    <section>
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Welcome to E-Voting Blockchain System</h2><center>
+                    <center><h4>Please Choose Your Profile to Login</h4><center>
+                </div>
+            </div>
           </div>
-
+        </div>
+      </section>        
+      <div id="outer">
+          
+          <div class="button_slide slide_left"><a type="button" href="{% url 'e_voting:login_admin' %}" style = "text-decoration: none;color: black">ADMIN LOGIN</a> </div>
+          <br /> <br /><br />
+          <div class="button_slide slide_left"><a type="button" style = "text-decoration: none;color: black">VOTER LOGIN</a> </div>
+          <br />
+      </br>
+          <center><h6>If you do not have account, please go to Sign In page.</h6></center>
+        </div>
+    
+</body>
 {% endblock %}
+</html>

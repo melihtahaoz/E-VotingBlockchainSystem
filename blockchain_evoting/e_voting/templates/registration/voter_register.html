@@ -1,0 +1,31 @@
+{% extends '../base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+   
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+{% block content %}
+<body>
+<center><div>
+    <h2> Voter Sign Up</h2>
+    <form action="{% url 'teacher_register' %}" method="POST" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+          {{ field.label_tag }}<br>
+          {{ field }}
+          {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </p>
+      {% endfor %}
+        <input type="submit" value="Sign Up" class="btn btn-block btn-primary">
+    </div>
+</center>
+
+</body>
+{% endblock %}
+</html>
