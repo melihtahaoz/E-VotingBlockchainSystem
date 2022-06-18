@@ -4,7 +4,7 @@ from django import forms
 from .models import Voter
 
 class VoterSignUpForm(UserCreationForm):
-    mail_addr = forms.CharField(required=True)
+    mail_addr = forms.CharField(required=True, max_length=60)
 
     
 

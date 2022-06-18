@@ -11,8 +11,9 @@ from django.contrib.auth.models import Group, User
 
 class VoterAdmin(admin.ModelAdmin):
 
-    list_display = ('public_e_sign_key', 'has_voted')
+    list_display = ('u_name',)
     fields = ('public_e_sign_key', 'has_voted')
+    list_display_links = None
     
     # Disable add permission
     def has_add_permission(self, request):
