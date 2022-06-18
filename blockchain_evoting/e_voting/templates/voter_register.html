@@ -1,4 +1,4 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
    
@@ -11,7 +11,7 @@
 <body>
 <center><div>
     <h2> Voter Sign Up</h2>
-    <form action="{% url 'teacher_register' %}" method="POST" novalidate>
+    <form action="{% url 'e_voting:voter_register' %}" method="POST" novalidate>
         {% csrf_token %}
         {% for field in form %}
         <p>

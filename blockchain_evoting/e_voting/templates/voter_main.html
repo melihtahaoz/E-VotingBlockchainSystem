@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>PLEASE CHOOSE YOUR CANDIDATE TO VOTE</h1>
+<br><br>
+<div class="row">
+{% for candidate in candidate_list %}
+  <div class="card" style="width: 16rem;">
+    <img class="card-img-top" src="/static/vesikalik.jpg" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title"><center><strong>{{candidate.name}}</strong><center></h5>
+      <ul>
+        <li><strong>Party: </strong> {{candidate.party}}</li>  
+        <li><strong>Current Vote Count: </strong>{{candidate.vote_count}}</li>
+      </ul>
+      <center><a href="#" class="btn btn-primary">VOTE</a></center>
+    </div>
+  </div>
+{% endfor %}
+
+</div>
+
+{% endblock %}
