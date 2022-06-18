@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView
 from django.contrib import messages
 from .forms import VoterSignUpForm
-from .models import Candidate, Voter
+from .models import Candidate, Voter, Vote
 
 def index(request):
     return render(request, 'home.html')
@@ -17,9 +17,15 @@ def log_out(request):
     logout(request)
     return render(request, 'home.html')
 
-def voter_main(request):
-    candidate_list = Candidate.objects.all()
-    return render(request, 'voter_main.html', {'candidate_list': candidate_list})
+def voter_main(request,):
+    print(request.user)
+    voter = Voter.objects.filter(u_name=request.user.username)[0]
+    if(voter.eligibility):
+        candidate_list = Candidate.objects.all()
+        return render(request, 'voter_main.html', {'candidate_list': candidate_list})
+    else:
+        #TO DO: integrate you are not eligible! message to the voter_main page here
+        return HttpResponse("yoooooooo")
 
 def login_voter(request):
     if request.method=='POST':
@@ -52,6 +58,24 @@ def login_admin(request):
         else:
             messages.error(request,"Invalid username or password")
     return render(request, 'home.html',context={'form':AuthenticationForm()})
+
+def vote(request,name):
+    print(request.user)
+    voter = Voter.objects.filter(u_name=request.user.username)[0]
+    candidate = Candidate.objects.filter(name=name)[0]
+    if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
+        new_vote = Vote(candidate=candidate,voter=voter)
+        new_vote.save()
+        voter.has_voted = 1
+        voter.save(update_fields=['has_voted'])
+        candidate.vote_count += 1
+        candidate.save(update_fields=['vote_count'])
+        #TO DO: after voting, show a different page that says you have voted and the evidence etc. - maybe after integrating blockchain
+        response = redirect('/voter_main')
+        return response 
+    else:
+        #TO DO: integrate you already voted! message to the voter_main page here
+        return HttpResponse("user has already voted!\n\n")
 
 class voter_register(CreateView):
     model = Voter  
