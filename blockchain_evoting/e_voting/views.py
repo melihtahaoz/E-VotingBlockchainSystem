@@ -11,7 +11,7 @@ import solcx
 from solcx import compile_standard
 import json
 
-
+election_instance = None
 solcx.install_solc('0.7.0')
 
 with open(r"C:\Users\user\Desktop\E-VotingBlockchainSystem\blockchain_evoting\e_voting\Election.sol", "r") as file:
@@ -245,7 +245,13 @@ def login_voter(request):
     return render(request, 'registration/login.html',context={'form':AuthenticationForm()})
 
 def login_admin(request):
-    return HttpResponse("Admin Login Page")
+    global nonce
+    global election_instance
+    print(nonce)
+    election_instance, nonce2 = deploy_election(Election, nonce, "Election Test")
+    nonce = nonce2
+    print(nonce)
+    return render(request, 'admin_main.html')
 
 def vote(request,name):
     print(request.user)
@@ -280,3 +286,33 @@ class voter_register(CreateView):
         login(self.request, voter)
         return redirect('/voter_main')
 
+def add_candidate(request):
+    global nonce
+    global election_instance
+    if request.method=='POST':
+        data = request.POST
+        candidate_name = data["fname"]
+        nonce2 = addCandidate(election_instance, nonce, candidate_name)
+        nonce = nonce2
+        print(nonce)
+    return render(request, 'admin_main.html')
+
+def next_state_add_voter(request):
+    global nonce
+    global election_instance
+    nonce2 = nextStateAddVoter(election_instance, nonce)
+    nonce = nonce2
+    print(nonce)
+    return render(request, 'admin_main.html')
+
+def add_voter(request):
+    global nonce
+    global election_instance
+    if request.method== 'POST':
+        data = request.POST
+        votername = data["votername"]
+        voteraddress = data["voteraddress"]
+        nonce2 = addVoter(election_instance, nonce, votername, voteraddress)
+        nonce = nonce2
+        print(nonce)
+    return render(request, 'admin_main.html')
