@@ -12,7 +12,11 @@
         <li><strong>Party: </strong> {{candidate.party}}</li>  
         <li><strong>Current Vote Count: </strong>{{candidate.vote_count}}</li>
       </ul>
-      <center><a href="#" class="btn btn-primary">VOTE</a></center>
+      <form action="{% url 'e_voting:vote' name=candidate.name %}" method="POST" class="form-group">
+        {% csrf_token %}
+        <center><input type="submit" class="btn btn-primary">VOTE</input></center>
+    </form>
+      
     </div>
   </div>
 {% endfor %}

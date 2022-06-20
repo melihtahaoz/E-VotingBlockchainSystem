@@ -11,4 +11,5 @@ urlpatterns = [
     path('voter_register/', views.voter_register.as_view(), name='voter_register'),
     path('voter_main', views.voter_main, name='voter_main'),
     path('accounts/profile/', views.voter_main, name='voter_main'),
+    path('vote/<str:name>', views.vote, name='vote'),
     ]
