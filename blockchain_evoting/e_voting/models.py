@@ -4,7 +4,6 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from Crypto import Random
 from Crypto.PublicKey import RSA
-from sympy import true
 
 class Voter(models.Model):
     RSAkey = RSA.generate(1024)
