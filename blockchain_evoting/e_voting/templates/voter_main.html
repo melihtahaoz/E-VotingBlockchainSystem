@@ -11,6 +11,8 @@
       
       <form action="{% url 'e_voting:vote' name=candidate %}" method="POST" class="form-group">
         {% csrf_token %}
+        <input type="text" name="Address" class="form-control my-3" placeholder="Address" style="text-align: center;" required>
+        <input type="text" name="private_key" class="form-control my-3" placeholder="Private Key" style="text-align: center;" required>
         <center><input type="submit" class="btn btn-primary">VOTE</input></center>
     </form>
       

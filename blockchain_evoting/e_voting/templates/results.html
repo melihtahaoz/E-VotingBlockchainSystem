@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Voting Results</h2><center>
+                </div>
+            </div>
+          </div>
+        </div>
+      </section>        
+      
+      <div class="container">
+          <div class="mx-auto">
+            <div class="card">
+              <div class="card-header text-black" style="background:green">
+                <center><h2>Winner is {{winner}}!</h2><center>
+              </div>
+          </div>
+        </div>
+        
+    {% for key,value in results.items %}
+    <div class="card" style="width: 16rem;">
+    <img class="card-img-top" src="/static/vesikalik.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title"><center><strong>{{key}}</strong><center></h5>
+            <h5 class="card-title"><center><strong>{{value}}</strong><center></h5>
+        </div>
+    </div>
+    {% endfor %}
+</body>
+{% endblock %}
+</html>

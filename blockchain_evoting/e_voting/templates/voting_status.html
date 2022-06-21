@@ -27,7 +27,37 @@
       
       <br>
       <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:next_state_voting' %}" style = "text-decoration: none;color: black">Start</a> </div>
-      <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:voting_panel' %}" style = "text-decoration: none;color: black">Finish</a> </div>
+      <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:next_state_finish' %}" style = "text-decoration: none;color: black">Finish</a> </div>
+        
+        {% if voting_started %}
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Voting has started and going on at the moment!</h2><center>
+                </div>
+            </div>
+          </div>
+        {% elif voting_finished %}
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Voting has finished, to see the result please hit result button</h2><center>
+                    <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:results' %}" style = "text-decoration: none;color: black">See Results</a> </div>
+                </div>
+            </div>
+          </div>
+        {% else %}
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Voting has not started yet</h2><center>
+                </div>
+            </div>
+          </div>
+        {% endif %}
 
 </body>
 {% endblock %}

@@ -19,7 +19,11 @@ urlpatterns = [
 
     path('add_voter', views.add_voter, name='add_voter'),
     path('add_voter_panel', views.add_voter_panel, name='add_voter_panel'),
-    path('next_state_voting', views.next_state_voting, name='next_state_voting'),
+    
 
     path('voting_panel', views.voting_panel, name='voting_panel'),
-    ]
+    path('next_state_voting', views.next_state_voting, name='next_state_voting'),
+    path('next_state_finish', views.next_state_finish, name='next_state_finish'),
+
+    path('results', views.results, name='results'),
+]

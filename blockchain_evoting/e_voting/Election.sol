@@ -54,7 +54,7 @@ contract Election {
     }
 
     modifier isLaterThanThisState(VotingStates voteState){
-        require(voteState >= votingState);
+        require(voteState <= votingState);
         _;
     }
 

@@ -1,3 +1,4 @@
+import operator
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.admin.forms import AuthenticationForm
@@ -11,7 +12,7 @@ import solcx
 from solcx import compile_standard
 import json
 voting_started = False
-
+voting_finished = False
 election_instance = None
 solcx.install_solc('0.7.0')
 
@@ -41,8 +42,8 @@ abi = compiled_sol["contracts"]["Election.sol"]["Election"]["abi"]
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
 chain_id = 1337
 
-admin_address = "0x169F7fB36DFCeC1f4Daa6F53Dea0333c99bD38aB"
-admin_private = "0x034391cdb227d6b89293f385813daf01db21b8a6d20bd74c3f63a64207da4ef4"
+admin_address = "0xfe3bEba413D7E9F10Bdb91E2CA36cA199ef57BA0"
+admin_private = "0xf6e2ec54c7bb046eeb01a7e6c34c614a00f231178a974869caab57793eec4d8d"
 
 Election = w3.eth.contract(abi=abi, bytecode=bytecode)
 nonce = w3.eth.getTransactionCount(admin_address)
@@ -188,7 +189,7 @@ def voting(election_instance, nonce, candidate_name, voter_public, voter_private
 	)
 
 	tx_greeting_hash = w3.eth.send_raw_transaction(signed_greeting_txn.rawTransaction)
-	print("Updating stored Value...")
+	print("Vote is being saved...")
 	tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
 	print(tx_receipt)
 	
@@ -221,16 +222,19 @@ def log_out(request):
 
 def voter_main(request):
 	global election_instance
-	print(request.user)
+	global voting_started
 	voter = Voter.objects.filter(u_name=request.user.username)[0]
-	voted = isUserVoted(election_instance,'0x42fe2fD37FB0161934b133455Bc5aaf2F3764acE')
-	print(voted)
-	if(not voted):
-		candidate_list = getCandidateNames(election_instance)
-		return render(request, 'voter_main.html', {'candidate_list': candidate_list})
+	voted = isUserVoted(election_instance,'0x69531a9ec2E2CB27BD2dfe94C9d0A998C111c1e0')
+	print("Voted:",voted)
+	if voting_started:
+		if(not voted):
+			candidate_list = getCandidateNames(election_instance)
+			return render(request, 'voter_main.html', {'candidate_list': candidate_list})
+		else:
+				#TO DO: integrate you are not eligible! message to the voter_main page here
+			return HttpResponse("You already voted! Here is the receipt: ")
 	else:
-			#TO DO: integrate you are not eligible! message to the voter_main page here
-		return HttpResponse("You already voted")
+		return HttpResponse("Voting has not started yet! Try later!")
 
 def login_voter(request):
     if request.method=='POST':
@@ -261,19 +265,25 @@ def login_admin(request):
     return render(request, 'admin_main.html')
 
 def vote(request,name):
-    print(request.user)
-    voter = Voter.objects.filter(u_name=request.user.username)[0]
-    candidate = Candidate.objects.filter(name=name)[0]
-    if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
-        voter.has_voted = 1
-        voter.save(update_fields=['has_voted'])
-        candidate.save(update_fields=['vote_count'])
-        #TO DO: after voting, show a different page that says you have voted and the evidence etc. - maybe after integrating blockchain
-        response = redirect('/voter_main')
-        return response 
-    else:
-        #TO DO: integrate you already voted! message to the voter_main page here
-        return HttpResponse("user has already voted!\n\n")
+	print(request.user)
+	#voter = Voter.objects.filter(u_name=request.user.username)[0]
+	#candidate = Candidate.objects.filter(name=name)[0]
+	if request.method == 'POST' and request.user.is_authenticated:
+		#voter.has_voted = 1
+		#voter.save(update_fields=['has_voted'])
+		#candidate.save(update_fields=['vote_count'])
+		#TO DO: after voting, show a different page that says you have voted and the evidence etc. - maybe after integrating blockchain
+		address = request.POST.get('Address')
+		private_key = request.POST.get('private_key')
+		print(address)
+		global election_instance
+		global admin_private
+		voting(election_instance,0,name,address,private_key)
+		response = redirect('/voter_main')
+		return response 
+	else:
+	#TO DO: integrate you already voted! message to the voter_main page here
+		return HttpResponse("user has already voted!\n\n")
 
 class voter_register(CreateView):
     global nonce
@@ -325,7 +335,7 @@ def add_voter(request):
     return render(request, 'add_voter_panel.html')
 
 def voting_panel(request):
-	return render(request,'voting_status.html')
+	return render(request,'voting_status.html',{'voting_finished': voting_finished,'voting_started': voting_started})
 
 def next_state_voting(request):
 	global voting_started
@@ -336,4 +346,27 @@ def next_state_voting(request):
 	print("Voting has started...")
 	nonce = nonce2
 	print(nonce)
-	return render(request,'voting_status.html')
+	return render(request,'voting_status.html',{'voting_finished': voting_finished,'voting_started': voting_started})
+
+def next_state_finish(request):
+	global voting_finished
+	global voting_started
+	global nonce
+	global election_instance
+	nonce2 = nextStateFinishing(election_instance,nonce)
+	voting_finished = True
+	voting_started = False
+	nonce = nonce2
+	print(nonce)
+	return render(request,'voting_status.html',{'voting_finished': voting_finished,'voting_started': voting_started})
+
+def results(request):
+	global election_instance
+	candidates = getCandidateNames(election_instance)
+	resultsMap = {}
+	for candidate in candidates:
+		resultsMap[candidate] = getResultsValue(election_instance,candidate)
+	
+	winner = max(results.items(), key=results.get)
+	print(winner)
+	return render(request,'results.html',{'results':resultsMap, 'candidates': candidates,'winner': winner})
