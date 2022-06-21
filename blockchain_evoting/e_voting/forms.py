@@ -5,6 +5,7 @@ from .models import Voter
 
 class VoterSignUpForm(UserCreationForm):
     mail_addr = forms.CharField(required=True, max_length=60)
+    public_key = forms.CharField(required=True, max_length=350)
 
     
 

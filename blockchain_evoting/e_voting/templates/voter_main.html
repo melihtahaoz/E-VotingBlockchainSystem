@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>PLEASE CHOOSE YOUR CANDIDATE TO VOTE</h1>
+<h1>Welcome</h1>
 <br><br>
 <div class="row">
 {% for candidate in candidate_list %}
   <div class="card" style="width: 16rem;">
-    <img class="card-img-top" src="/static/vesikalik.jpg" alt="Card image cap">
+    <img class="card-img-top" src="/static/Candidate.png" alt="Card image cap">
     <div class="card-body">
       <h5 class="card-title"><center><strong>{{candidate}}</strong><center></h5>
       
@@ -14,12 +14,35 @@
         <input type="text" name="Address" class="form-control my-3" placeholder="Address" style="text-align: center;" required>
         <input type="text" name="private_key" class="form-control my-3" placeholder="Private Key" style="text-align: center;" required>
         <center><input type="submit" class="btn btn-primary">VOTE</input></center>
-    </form>
+      </form>
       
     </div>
   </div>
-{% endfor %}
-
+  {% endfor %}
+  <body>
+    <section>
+      <center><div class="container">
+        <div class="mx-auto">
+          <div class="card">
+            <div class="card-header text-black" style="background:green">
+              <center><h2>Welcome {{user.username}}</h2><center>
+                <center><h4>{{msg}}</h4><center>
+                  {% for key,value in receipt.items %}
+                  <div class="card" style="width: 16rem;">
+                      <div class="card-body">
+                          <h5 class="card-title"><center><strong>{{key}}</strong><center></h5>
+                          <h5 class="card-title"><center><strong>{{value}}</strong><center></h5>
+                      </div>
+                  </div>
+                  {% endfor %}
+            </div>
+        </div>
+      </div>
+    </div>
+      </center> 
+      </section>        
+      <br>
+  </body>
 </div>
 
 {% endblock %}
