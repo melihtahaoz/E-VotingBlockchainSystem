@@ -42,8 +42,8 @@ abi = compiled_sol["contracts"]["Election.sol"]["Election"]["abi"]
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
 chain_id = 1337
 
-admin_address = "0x3BE70A1D2D19d8Bc329320eda6FdB1947B3dF7FA"
-admin_private = "0x88a7c8e46f5dd4bb720e79c4ff65daa43838ce80d86dbb4eb7a906177a6826e3"
+admin_address = "0x0C49a4f679eBFEf9D18A4291cAbd12E6aA5A39E7"
+admin_private = "0xb31474dc0e98d02892a30aebc8564aca1d53d9b060883bf7e275f50a069db36d"
 
 Election = w3.eth.contract(abi=abi, bytecode=bytecode)
 nonce = w3.eth.getTransactionCount(admin_address)
@@ -236,8 +236,12 @@ def voter_main(request):
 			msg = "You already voted! Here is the receipt of your vote:"
 			return render(request, 'voter_main.html', { 'msg': msg})
 	else:
-		msg = "Voting has not started yet. Please check back later!"
-		return render(request, 'voter_main.html', {'msg': msg})
+		if not voting_finished:
+			msg = "Voting has not started yet. Please check back later!"
+			return render(request, 'voter_main.html', {'msg': msg})
+		else:
+			msg = "Voting has finished!"
+			return render(request, 'voter_main.html', {'msg': msg})
 
 def login_voter(request):
     if request.method=='POST':
@@ -369,6 +373,4 @@ def results(request):
 	for candidate in candidates:
 		resultsMap[candidate] = getResultsValue(election_instance,candidate)
 	
-	winner = max(results.items(), key=results.get)
-	print(winner)
-	return render(request,'results.html',{'results':resultsMap, 'candidates': candidates,'winner': winner})
+	return render(request,'results.html',{'results':resultsMap, 'candidates': candidates})
