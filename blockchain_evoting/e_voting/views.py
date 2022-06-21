@@ -269,13 +269,10 @@ def login_admin(request):
 
 def vote(request,name):
 	print(request.user)
-	#voter = Voter.objects.filter(u_name=request.user.username)[0]
-	#candidate = Candidate.objects.filter(name=name)[0]
-	if request.method == 'POST' and request.user.is_authenticated:
-		#voter.has_voted = 1
-		#voter.save(update_fields=['has_voted'])
-		#candidate.save(update_fields=['vote_count'])
-		#TO DO: after voting, show a different page that says you have voted and the evidence etc. - maybe after integrating blockchain
+	voter = Voter.objects.filter(u_name=request.user.username)[0]
+	if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
+		voter.has_voted = 1
+		voter.save(update_fields=['has_voted'])
 		address = request.POST.get('Address')
 		private_key = request.POST.get('private_key')
 		print(address)
@@ -286,7 +283,7 @@ def vote(request,name):
 		return render(request, 'voter_main.html', { 'msg': msg,'receipt': receipt}) 
 	else:
 	#TO DO: integrate you already voted! message to the voter_main page here
-		return HttpResponse("user has already voted!\n\n")
+		return redirect('')
 
 class voter_register(CreateView):
 	global nonce
@@ -304,15 +301,16 @@ class voter_register(CreateView):
 		return redirect('/voter_main')
 
 def add_candidate(request):
-    global nonce
-    global election_instance
-    if request.method=='POST':
-        data = request.POST
-        candidate_name = data["fname"]
-        nonce2 = addCandidate(election_instance, nonce, candidate_name)
-        nonce = nonce2
-        print(nonce)
-    return render(request, 'admin_main.html')
+	global nonce
+	global election_instance
+	if request.method=='POST':
+		data = request.POST
+		candidate_name = data["fname"]
+		nonce2 = addCandidate(election_instance, nonce, candidate_name)
+		nonce = nonce2
+		print(nonce)
+		msg = candidate_name + " has added to the candidate list."
+		return render(request, 'admin_main.html')
 
 def next_state_add_voter(request):
     global nonce
@@ -326,16 +324,17 @@ def add_voter_panel(request):
 	return render(request, 'add_voter_panel.html')
 
 def add_voter(request):
-    global nonce
-    global election_instance
-    if request.method== 'POST':
-        data = request.POST
-        votername = data["votername"]
-        voteraddress = data["voteraddress"]
-        nonce2 = addVoter(election_instance, nonce, votername, voteraddress)
-        nonce = nonce2
-        print(nonce)
-    return render(request, 'add_voter_panel.html')
+	global nonce
+	global election_instance
+	if request.method== 'POST':
+		data = request.POST
+		votername = data["votername"]
+		voteraddress = data["voteraddress"]
+		nonce2 = addVoter(election_instance, nonce, votername, voteraddress)
+		nonce = nonce2
+		print(nonce)
+		msg = votername + " has added to the voters list."
+	return render(request, 'add_voter_panel.html',)
 
 def voting_panel(request):
 	return render(request,'voting_status.html',{'voting_finished': voting_finished,'voting_started': voting_started})
