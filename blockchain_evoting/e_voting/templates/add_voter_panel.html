@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Welcome to Admin Panel</h2><center>
+                    <center><h4>Please add all the voter and when you finished, press next!</h4><center>
+                </div>
+            </div>
+          </div>
+        </div>
+      </section>        
+    
+      
+      <br>
+      <form method="post" action="{% url 'e_voting:add_voter' %}">
+        {% csrf_token %}
+        <label for="votername">Voter Name:</label>
+        <input type="text" id="votername" name="votername"><br>
+        <label for="voteraddress">Voter Address:</label>
+        <input type="text" id="voteraddress" name="voteraddress"><br>
+        <input type="submit" value="Add Voter" class="btn btn-primary my-5" style="font-size: 1.4vw;">
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+      <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:voting_panel' %}" style = "text-decoration: none;color: black">NEXT</a> </div>
+
+</body>
+{% endblock %}
+</html>

@@ -19,10 +19,4 @@ class Voter(models.Model):
 
 class Candidate(models.Model):
     name = models.CharField(max_length=25)
-    vote_count = models.IntegerField(default=0,editable=False)
-    party = models.CharField(max_length=25)
-    #photo = models.ImageField(default='static/vesikalik.jpg',null=True)
 
-class Vote(models.Model):
-    voter = models.OneToOneField(Voter, on_delete=models.CASCADE,primary_key=True)
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)

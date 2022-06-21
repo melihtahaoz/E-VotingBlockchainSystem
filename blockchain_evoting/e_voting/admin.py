@@ -30,18 +30,6 @@ class VoterAdmin(admin.ModelAdmin):
 admin.site.register(models.Voter,VoterAdmin)
 
 class CandidateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'party')
+    list_display = ('name',)
 
 admin.site.register(models.Candidate, CandidateAdmin)
-
-class VoteAdmin(admin.ModelAdmin):
-    list_display = ('voter', 'candidate')
-
-    def has_add_permission(self, request):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
-    def has_change_permission(self, request, obj=None):
-        return False
-
-admin.site.register(models.Vote, VoteAdmin)

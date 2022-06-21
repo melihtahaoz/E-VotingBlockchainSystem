@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="mx-auto">
+              <div class="card">
+                <div class="card-header text-black" style="background:green">
+                  <center><h2>Welcome to Admin Panel</h2><center>
+                    <center><h4>Please Hit the Button to deploy smart contract!</h4><center>
+                </div>
+            </div>
+          </div>
+        </div>
+      </section>        
+      <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:login_admin' %}" style = "text-decoration: none;color: black">DEPLOY</a> </div>
+      <br>
+</body>
+{% endblock %}
+</html>

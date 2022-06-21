@@ -7,12 +7,9 @@
   <div class="card" style="width: 16rem;">
     <img class="card-img-top" src="/static/vesikalik.jpg" alt="Card image cap">
     <div class="card-body">
-      <h5 class="card-title"><center><strong>{{candidate.name}}</strong><center></h5>
-      <ul>
-        <li><strong>Party: </strong> {{candidate.party}}</li>  
-        <li><strong>Current Vote Count: </strong>{{candidate.vote_count}}</li>
-      </ul>
-      <form action="{% url 'e_voting:vote' name=candidate.name %}" method="POST" class="form-group">
+      <h5 class="card-title"><center><strong>{{candidate}}</strong><center></h5>
+      
+      <form action="{% url 'e_voting:vote' name=candidate %}" method="POST" class="form-group">
         {% csrf_token %}
         <center><input type="submit" class="btn btn-primary">VOTE</input></center>
     </form>

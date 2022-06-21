@@ -35,16 +35,6 @@
 
       <div class="button_slide slide_left"><a type="button_home" href="{% url 'e_voting:next_state_add_voter' %}" style = "text-decoration: none;color: black">ALL CANDIDATES ADDED</a> </div>
       <br>
-      <form method="post" action="{% url 'e_voting:add_voter' %}">
-        {% csrf_token %}
-        <label for="votername">Voter Name:</label>
-        <input type="text" id="votername" name="votername"><br>
-        <label for="voteraddress">Voter Address:</label>
-        <input type="text" id="voteraddress" name="voteraddress"><br>
-        <input type="submit" value="Add Voter" class="btn btn-primary my-5" style="font-size: 1.4vw;">
-        <input type="hidden" name="next" value="{{ next }}" />
-      </form>
-
 </body>
 {% endblock %}
 </html>

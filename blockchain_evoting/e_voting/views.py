@@ -5,16 +5,17 @@ from django.contrib.auth import login, logout, authenticate
 from django.views.generic import CreateView
 from django.contrib import messages
 from .forms import VoterSignUpForm
-from .models import Candidate, Voter, Vote
+from .models import Candidate, Voter
 from web3 import Web3
 import solcx
 from solcx import compile_standard
 import json
+voting_started = False
 
 election_instance = None
 solcx.install_solc('0.7.0')
 
-with open(r"C:\Users\user\Desktop\E-VotingBlockchainSystem\blockchain_evoting\e_voting\Election.sol", "r") as file:
+with open(r"C:\Users\Batuhan Demir\Desktop\repos\E-VotingBlockchainSystem\blockchain_evoting\e_voting\Election.sol", "r") as file:
  election_file = file.read()
 
 
@@ -40,8 +41,8 @@ abi = compiled_sol["contracts"]["Election.sol"]["Election"]["abi"]
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
 chain_id = 1337
 
-admin_address = "0x337086a2a1239bf1f9e58DE0f271Ce9F35857B6e"
-admin_private = "0x4318e427fbf2073f7175d845eab628f2910e942c0a75a72983c861b899b7988f"
+admin_address = "0x169F7fB36DFCeC1f4Daa6F53Dea0333c99bD38aB"
+admin_private = "0x034391cdb227d6b89293f385813daf01db21b8a6d20bd74c3f63a64207da4ef4"
 
 Election = w3.eth.contract(abi=abi, bytecode=bytecode)
 nonce = w3.eth.getTransactionCount(admin_address)
@@ -218,15 +219,18 @@ def log_out(request):
     logout(request)
     return render(request, 'home.html')
 
-def voter_main(request,):
-    print(request.user)
-    voter = Voter.objects.filter(u_name=request.user.username)[0]
-    if(voter.eligibility):
-        candidate_list = Candidate.objects.all()
-        return render(request, 'voter_main.html', {'candidate_list': candidate_list})
-    else:
-        #TO DO: integrate you are not eligible! message to the voter_main page here
-        return HttpResponse("yoooooooo")
+def voter_main(request):
+	global election_instance
+	print(request.user)
+	voter = Voter.objects.filter(u_name=request.user.username)[0]
+	voted = isUserVoted(election_instance,'0x42fe2fD37FB0161934b133455Bc5aaf2F3764acE')
+	print(voted)
+	if(not voted):
+		candidate_list = getCandidateNames(election_instance)
+		return render(request, 'voter_main.html', {'candidate_list': candidate_list})
+	else:
+			#TO DO: integrate you are not eligible! message to the voter_main page here
+		return HttpResponse("You already voted")
 
 def login_voter(request):
     if request.method=='POST':
@@ -244,6 +248,9 @@ def login_voter(request):
             messages.error(request,"Invalid username or password")
     return render(request, 'registration/login.html',context={'form':AuthenticationForm()})
 
+def welcome_admin(request):
+	return render(request,'welcome_admin.html')
+
 def login_admin(request):
     global nonce
     global election_instance
@@ -258,11 +265,8 @@ def vote(request,name):
     voter = Voter.objects.filter(u_name=request.user.username)[0]
     candidate = Candidate.objects.filter(name=name)[0]
     if request.method == 'POST' and request.user.is_authenticated and not voter.has_voted:
-        new_vote = Vote(candidate=candidate,voter=voter)
-        new_vote.save()
         voter.has_voted = 1
         voter.save(update_fields=['has_voted'])
-        candidate.vote_count += 1
         candidate.save(update_fields=['vote_count'])
         #TO DO: after voting, show a different page that says you have voted and the evidence etc. - maybe after integrating blockchain
         response = redirect('/voter_main')
@@ -303,7 +307,10 @@ def next_state_add_voter(request):
     nonce2 = nextStateAddVoter(election_instance, nonce)
     nonce = nonce2
     print(nonce)
-    return render(request, 'admin_main.html')
+    return redirect('/add_voter_panel')
+
+def add_voter_panel(request):
+	return render(request, 'add_voter_panel.html')
 
 def add_voter(request):
     global nonce
@@ -315,4 +322,18 @@ def add_voter(request):
         nonce2 = addVoter(election_instance, nonce, votername, voteraddress)
         nonce = nonce2
         print(nonce)
-    return render(request, 'admin_main.html')
+    return render(request, 'add_voter_panel.html')
+
+def voting_panel(request):
+	return render(request,'voting_status.html')
+
+def next_state_voting(request):
+	global voting_started
+	global nonce
+	global election_instance
+	nonce2 = nextStateVoting(election_instance,nonce)
+	voting_started = True
+	print("Voting has started...")
+	nonce = nonce2
+	print(nonce)
+	return render(request,'voting_status.html')
