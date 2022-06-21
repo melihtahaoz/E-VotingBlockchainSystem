@@ -16,7 +16,7 @@ voting_finished = False
 election_instance = None
 solcx.install_solc('0.7.0')
 
-with open(r"C:\Users\Batuhan Demir\Desktop\repos\E-VotingBlockchainSystem\blockchain_evoting\e_voting\Election.sol", "r") as file:
+with open(r"C:\Users\user\Desktop\E-VotingBlockchainSystem\blockchain_evoting\e_voting\Election.sol", "r") as file:
  election_file = file.read()
 
 
@@ -42,8 +42,8 @@ abi = compiled_sol["contracts"]["Election.sol"]["Election"]["abi"]
 w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
 chain_id = 1337
 
-admin_address = "0x0C49a4f679eBFEf9D18A4291cAbd12E6aA5A39E7"
-admin_private = "0xb31474dc0e98d02892a30aebc8564aca1d53d9b060883bf7e275f50a069db36d"
+admin_address = "0xf6441A89f73e1a0aC0edA03f87a2F70856443CD7"
+admin_private = "0x0f223b2a3cc1125aa91ac2b952344bad3a29d336a627e21d2bf271d079cb63cf"
 
 Election = w3.eth.contract(abi=abi, bytecode=bytecode)
 nonce = w3.eth.getTransactionCount(admin_address)
@@ -241,7 +241,7 @@ def voter_main(request):
 			return render(request, 'voter_main.html', {'msg': msg})
 		else:
 			msg = "Voting has finished!"
-			return render(request, 'voter_main.html', {'msg': msg})
+			return redirect('/results')
 
 def login_voter(request):
     if request.method=='POST':
@@ -287,7 +287,7 @@ def vote(request,name):
 		return render(request, 'voter_main.html', { 'msg': msg,'receipt': receipt}) 
 	else:
 	#TO DO: integrate you already voted! message to the voter_main page here
-		return redirect('')
+		return HttpResponse("You cannot vote more than 1!")
 
 class voter_register(CreateView):
 	global nonce
@@ -310,11 +310,15 @@ def add_candidate(request):
 	if request.method=='POST':
 		data = request.POST
 		candidate_name = data["fname"]
-		nonce2 = addCandidate(election_instance, nonce, candidate_name)
-		nonce = nonce2
-		print(nonce)
-		msg = candidate_name + " has added to the candidate list."
-		return render(request, 'admin_main.html')
+		if candidate_name != '':
+			nonce2 = addCandidate(election_instance, nonce, candidate_name)
+			nonce = nonce2
+			print(nonce)
+			msg = candidate_name + " has added to the candidate list."
+			return render(request, 'admin_main.html', {'msg': msg})
+		else:
+			msg = "Candidate name cannot be empty!"
+			return render(request, 'admin_main.html', {'msg': msg})
 
 def next_state_add_voter(request):
     global nonce
